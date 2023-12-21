@@ -2,8 +2,6 @@ import streamlit as st
 import math
 import numpy as np
 
-st.set_page_config (page_title="Truss Analysis" page_icon="golden-gate-bridge.png" initial_sidebar_state="expanded")
-
 def truss_analysis(tn, te, xco, yco, A, E, elements, supports, loads):
     np.set_printoptions(3, suppress=True)
 
@@ -155,6 +153,7 @@ def truss_analysis(tn, te, xco, yco, A, E, elements, supports, loads):
     return GSM, dispmat, forcelist, newxco, newyco, elstrain, elstress, eforce
 
 def main():
+    st.set_page_config(page_title="Truss Analysis App", page_icon="🧊", layout="wide")
     # Navigation
     pages = ["Truss Matrix Info", "Run Analysis"]
     page = st.sidebar.selectbox("Select a page:", pages)
