@@ -176,75 +176,75 @@ def main():
 
     elif page == "Run Analysis":
 
-    tn = st.number_input('Enter the total number of nodes:', value=3, min_value=1, key='tn')
-    te = st.number_input('Enter the total number of Elements:', value=3, min_value=1, key='te')
+        tn = st.number_input('Enter the total number of nodes:', value=3, min_value=1, key='tn')
+        te = st.number_input('Enter the total number of Elements:', value=3, min_value=1, key='te')
 
-    xco = []
-    yco = []
-    for i in range(tn):
-        x = st.number_input(f'Enter the x co-ordinate of node {i+1} in mm:', key=f'x_{i}', value=0.0)
-        y = st.number_input(f'Enter the y co-ordinate of node {i+1} in mm:', key=f'y_{i}', value=0.0)
-        xco.append(x)
-        yco.append(y)
+        xco = []
+        yco = []
+        for i in range(tn):
+            x = st.number_input(f'Enter the x co-ordinate of node {i+1} in mm:', key=f'x_{i}', value=0.0)
+            y = st.number_input(f'Enter the y co-ordinate of node {i+1} in mm:', key=f'y_{i}', value=0.0)
+            xco.append(x)
+            yco.append(y)
 
-    A = st.number_input('Enter the Area of cross section in mm2:', value=10.0, key='A')
-    E = st.number_input('Enter the Modulus of Elasticity in N/mm2:', value=100.0, key='E')
+        A = st.number_input('Enter the Area of cross section in mm2:', value=10.0, key='A')
+        E = st.number_input('Enter the Modulus of Elasticity in N/mm2:', value=100.0, key='E')
 
-    elements = []
-    for i in range(te):
-        a = st.number_input(f'Enter the Start node of element {i+1}:', key=f'start_{i}', min_value=1, max_value=tn)
-        b = st.number_input(f'Enter the End node of element {i+1}:', key=f'end_{i}', min_value=1, max_value=tn)
-        elements.append((a, b))
+        elements = []
+        for i in range(te):
+            a = st.number_input(f'Enter the Start node of element {i+1}:', key=f'start_{i}', min_value=1, max_value=tn)
+            b = st.number_input(f'Enter the End node of element {i+1}:', key=f'end_{i}', min_value=1, max_value=tn)
+            elements.append((a, b))
 
-    supports = []
-    loads = []
+        supports = []
+        loads = []
 
-    tsupn = st.number_input('Enter the total number of nodes having supports:', min_value=0, max_value=tn, key='tsupn')
-    supcondition = ['P = pinned',
-                    'H = Horizonal restrained (vertical is free to move)',
-                    'V = Vertical restrained (Horizontal is free to move)']
+        tsupn = st.number_input('Enter the total number of nodes having supports:', min_value=0, max_value=tn, key='tsupn')
+        supcondition = ['P = pinned',
+                        'H = Horizonal restrained (vertical is free to move)',
+                        'V = Vertical restrained (Horizontal is free to move)']
 
-    for i in range(tsupn):
-        supn = st.number_input('Enter the node number of support:', min_value=1, max_value=tn, key=f'supn_{i}')
-        for a in supcondition:
-            st.write(a)
-        condition = st.text_input('Enter the condition of the support:', key=f'condition_{i}')
-        supports.append((supn, condition))
+        for i in range(tsupn):
+            supn = st.number_input('Enter the node number of support:', min_value=1, max_value=tn, key=f'supn_{i}')
+            for a in supcondition:
+                st.write(a)
+            condition = st.text_input('Enter the condition of the support:', key=f'condition_{i}')
+            supports.append((supn, condition))
 
-    tlon = st.number_input('Enter the total number of loaded nodes:', min_value=0, max_value=tn, key='tlon')
-    for i in range(tlon):
-        lon = st.number_input('Enter the node number of Loading:', min_value=1, max_value=tn, key=f'lon_{i}')
-        fx = st.number_input('Enter the Horizontal load at this node in N:', key=f'fx_{lon}', value=0.0)
-        fy = st.number_input('Enter the Vertical load at this node in N:', key=f'fy_{lon}', value=0.0)
-        loads.append((lon, fx, fy))
+        tlon = st.number_input('Enter the total number of loaded nodes:', min_value=0, max_value=tn, key='tlon')
+        for i in range(tlon):
+            lon = st.number_input('Enter the node number of Loading:', min_value=1, max_value=tn, key=f'lon_{i}')
+            fx = st.number_input('Enter the Horizontal load at this node in N:', key=f'fx_{lon}', value=0.0)
+            fy = st.number_input('Enter the Vertical load at this node in N:', key=f'fy_{lon}', value=0.0)
+            loads.append((lon, fx, fy))
 
-    if st.button("Run Analysis"):
-        result = truss_analysis(tn, te, xco, yco, A, E, elements, supports, loads)
+        if st.button("Run Analysis"):
+            result = truss_analysis(tn, te, xco, yco, A, E, elements, supports, loads)
 
-        if result is not None:
-            GSM, dispmat, forceresult, newxco, newyco, elstrain, elstress, eforce = result
+            if result is not None:
+                GSM, dispmat, forceresult, newxco, newyco, elstrain, elstress, eforce = result
 
-            st.subheader('Results:')
-            st.write('\n\nGlobal Stiffness Matrix of the Truss')
-            st.write(GSM)
+                st.subheader('Results:')
+                st.write('\n\nGlobal Stiffness Matrix of the Truss')
+                st.write(GSM)
 
-            st.write('\n\nDisplacement matrix of nodes')
-            st.write(dispmat)
+                st.write('\n\nDisplacement matrix of nodes')
+                st.write(dispmat)
 
-            st.write('\n\nForce matrix of nodes')
-            st.write(forceresult)
+                st.write('\n\nForce matrix of nodes')
+                st.write(forceresult)
 
-            st.write('\n\nNew coordinates of nodes')
-            st.write(list(zip(newxco, newyco)))
+                st.write('\n\nNew coordinates of nodes')
+                st.write(list(zip(newxco, newyco)))
 
-            st.write('\n\nStrain in the elements')
-            st.write(elstrain)
+                st.write('\n\nStrain in the elements')
+                st.write(elstrain)
 
-            st.write('\n\nStress in the elements')
-            st.write(elstress)
+                st.write('\n\nStress in the elements')
+                st.write(elstress)
 
-            st.write('\n\nForce in the elements')
-            st.write(eforce)
+                st.write('\n\nForce in the elements')
+                st.write(eforce)
 
 if __name__ == "__main__":
     main()
