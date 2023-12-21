@@ -17,6 +17,11 @@ def truss_analysis(tn, te, xco, yco, A, E, elements):
         x1, y1 = xco[a-1], yco[a-1]
         x2, y2 = xco[b-1], yco[b-1]
         l = math.sqrt((x2-x1)**2 + (y2-y1)**2)
+
+        if l == 0:
+            st.warning(f"Element {i+1} has zero length. Please adjust node positions.")
+            return None, None, None, None, None, None, None, None
+
         con = A*E/l
         cos = (x2-x1)/l
         sin = (y2-y1)/l
@@ -176,29 +181,32 @@ def main():
         elements.append((a, b))
 
     if st.button("Run Analysis"):
-        GSM, dispmat, forceresult, newxco, newyco, elstrain, elstress, eforce = truss_analysis(tn, te, xco, yco, A, E, elements)
+        result = truss_analysis(tn, te, xco, yco, A, E, elements)
 
-        st.subheader('Results:')
-        st.write('\n\nGlobal Stiffness Matrix of the Truss')
-        st.write(GSM)
+        if result is not None:
+            GSM, dispmat, forceresult, newxco, newyco, elstrain, elstress, eforce = result
 
-        st.write('\n\nDisplacement matrix of nodes')
-        st.write(dispmat)
+            st.subheader('Results:')
+            st.write('\n\nGlobal Stiffness Matrix of the Truss')
+            st.write(GSM)
 
-        st.write('\n\nForce matrix of nodes')
-        st.write(forceresult)
+            st.write('\n\nDisplacement matrix of nodes')
+            st.write(dispmat)
 
-        st.write('\n\nNew coordinates of nodes')
-        st.write(list(zip(newxco, newyco)))
+            st.write('\n\nForce matrix of nodes')
+            st.write(forceresult)
 
-        st.write('\n\nStrain in the elements')
-        st.write(elstrain)
+            st.write('\n\nNew coordinates of nodes')
+            st.write(list(zip(newxco, newyco)))
 
-        st.write('\n\nStress in the elements')
-        st.write(elstress)
+            st.write('\n\nStrain in the elements')
+            st.write(elstrain)
 
-        st.write('\n\nForce in the elements')
-        st.write(eforce)
+            st.write('\n\nStress in the elements')
+            st.write(elstress)
+
+            st.write('\n\nForce in the elements')
+            st.write(eforce)
 
 if __name__ == "__main__":
     main()
