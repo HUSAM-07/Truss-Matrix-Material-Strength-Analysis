@@ -2,6 +2,8 @@ import streamlit as st
 import math
 import numpy as np
 
+st.set_page_config(page_title='Truss Analysis' page_icon='#️⃣' initial_sidebar_state='expanded' layout='centered')
+
 def truss_analysis(tn, te, xco, yco, A, E, elements, supports, loads):
     np.set_printoptions(3, suppress=True)
 
