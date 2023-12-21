@@ -153,10 +153,31 @@ def truss_analysis(tn, te, xco, yco, A, E, elements, supports, loads):
     return GSM, dispmat, forcelist, newxco, newyco, elstrain, elstress, eforce
 
 def main():
-    st.title("Truss Analysis Application")
+    # Navigation
+    pages = ["Home", "Truss Matrix Info", "Run Analysis"]
+    page = st.sidebar.selectbox("Select a page:", pages)
 
-    tn = st.number_input('Enter the total number of nodes:', value=3, min_value=1)
-    te = st.number_input('Enter the total number of Elements:', value=3, min_value=1)
+    if page == "Home":
+        st.write("# Welcome to Truss Analysis App")
+        st.write("This app helps you analyze truss structures and provides information about the truss matrix.")
+
+    elif page == "Truss Matrix Info":
+        st.write("# Truss Matrix Information")
+        st.write("A truss is a structure that consists of members organized to form triangles. The analysis of truss structures involves solving for displacements and forces using the stiffness matrix.")
+
+        st.subheader("Global Stiffness Matrix (GSM):")
+        st.write("The GSM is a square matrix that represents the stiffness characteristics of the entire truss structure. It is assembled by combining the stiffness matrices of individual truss elements.")
+
+        st.subheader("Displacement Matrix:")
+        st.write("The displacement matrix contains the displacements of each degree of freedom at every node. It is calculated by solving the equilibrium equations based on boundary conditions and loads.")
+
+        st.subheader("Force Matrix:")
+        st.write("The force matrix represents the forces applied to each degree of freedom at every node. It is determined by applying external loads to the truss structure.")
+
+    elif page == "Run Analysis":
+
+    tn = st.number_input('Enter the total number of nodes:', value=3, min_value=1, key='tn')
+    te = st.number_input('Enter the total number of Elements:', value=3, min_value=1, key='te')
 
     xco = []
     yco = []
@@ -166,8 +187,8 @@ def main():
         xco.append(x)
         yco.append(y)
 
-    A = st.number_input('Enter the Area of cross section in mm2:', value=10.0)
-    E = st.number_input('Enter the Modulus of Elasticity in N/mm2:', value=100.0)
+    A = st.number_input('Enter the Area of cross section in mm2:', value=10.0, key='A')
+    E = st.number_input('Enter the Modulus of Elasticity in N/mm2:', value=100.0, key='E')
 
     elements = []
     for i in range(te):
@@ -178,21 +199,21 @@ def main():
     supports = []
     loads = []
 
-    tsupn = st.number_input('Enter the total number of nodes having supports:', min_value=0, max_value=tn)
+    tsupn = st.number_input('Enter the total number of nodes having supports:', min_value=0, max_value=tn, key='tsupn')
     supcondition = ['P = pinned',
                     'H = Horizonal restrained (vertical is free to move)',
                     'V = Vertical restrained (Horizontal is free to move)']
 
     for i in range(tsupn):
-        supn = st.number_input('Enter the node number of support:', min_value=1, max_value=tn)
+        supn = st.number_input('Enter the node number of support:', min_value=1, max_value=tn, key=f'supn_{i}')
         for a in supcondition:
             st.write(a)
-        condition = st.text_input('Enter the condition of the support:')
+        condition = st.text_input('Enter the condition of the support:', key=f'condition_{i}')
         supports.append((supn, condition))
 
-    tlon = st.number_input('Enter the total number of loaded nodes:', min_value=0, max_value=tn)
+    tlon = st.number_input('Enter the total number of loaded nodes:', min_value=0, max_value=tn, key='tlon')
     for i in range(tlon):
-        lon = st.number_input('Enter the node number of Loading:', min_value=1, max_value=tn)
+        lon = st.number_input('Enter the node number of Loading:', min_value=1, max_value=tn, key=f'lon_{i}')
         fx = st.number_input('Enter the Horizontal load at this node in N:', key=f'fx_{lon}', value=0.0)
         fy = st.number_input('Enter the Vertical load at this node in N:', key=f'fy_{lon}', value=0.0)
         loads.append((lon, fx, fy))
