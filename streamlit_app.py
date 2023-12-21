@@ -175,7 +175,8 @@ def main():
         st.subheader("Force Matrix:")
         st.write("The force matrix represents the forces applied to each degree of freedom at every node. It is determined by applying external loads to the truss structure.")
 
-        st.caption("This app is made by Krithika Rathi")
+        st.warning("This app is made by Krithika Rathi", icon='😊')
+
     elif page == "Run Analysis":
 
         tn = st.number_input('Enter the total number of nodes:', value=3, min_value=1, key='tn')
