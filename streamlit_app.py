@@ -154,17 +154,18 @@ def truss_analysis(tn, te, xco, yco, A, E, elements, supports, loads):
 
 def main():
     # Navigation
-    pages = ["Home", "Truss Matrix Info", "Run Analysis"]
+    pages = ["Truss Matrix Info", "Run Analysis"]
     page = st.sidebar.selectbox("Select a page:", pages)
 
-    if page == "Home":
+    
+
+    if page == "Truss Matrix Info":
         st.write("# Welcome to Truss Analysis App")
         st.write("This app helps you analyze truss structures and provides information about the truss matrix.")
-
-    elif page == "Truss Matrix Info":
         st.write("# Truss Matrix Information")
         st.write("A truss is a structure that consists of members organized to form triangles. The analysis of truss structures involves solving for displacements and forces using the stiffness matrix.")
-
+        st.caption("This app is made by Krithika Rathi")
+        
         st.subheader("Global Stiffness Matrix (GSM):")
         st.write("The GSM is a square matrix that represents the stiffness characteristics of the entire truss structure. It is assembled by combining the stiffness matrices of individual truss elements.")
 
