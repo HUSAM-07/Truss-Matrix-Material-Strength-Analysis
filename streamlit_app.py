@@ -2,7 +2,7 @@ import streamlit as st
 import math
 import numpy as np
 
-def truss_analysis(tn, te, xco, yco, A, E, elements):
+def truss_analysis(tn, te, xco, yco, A, E, elements, supports, loads):
     np.set_printoptions(3, suppress=True)
 
     snofel = []
@@ -79,16 +79,8 @@ def truss_analysis(tn, te, xco, yco, A, E, elements):
         forcelist.append(d)
 
     dispmat = np.ones((tn*2, 1))
-    tsupn = st.number_input('Enter the total number of nodes having supports:', min_value=0, max_value=tn)
-    supcondition = ['P = pinned',
-                    'H = Horizonal restrained (vertical is free to move)',
-                    'V = Vertical restrained (Horizontal is free to move)']
-
-    for i in range(tsupn):
-        supn = st.number_input('Enter the node number of support:', min_value=1, max_value=tn)
-        for a in supcondition:
-            st.write(a)
-        condition = st.text_input('Enter the condition of the support:')
+    for support in supports:
+        supn, condition = support
         if condition in ['P', 'p']:
             dispmat[supn*2-2, 0] = 0
             dispmat[supn*2-1, 0] = 0
@@ -97,11 +89,14 @@ def truss_analysis(tn, te, xco, yco, A, E, elements):
         elif condition in ['V', 'v']:
             dispmat[supn*2-1, 0] = 0
         else:
-            st.write('Please enter valid entries')
+            st.warning('Invalid support condition')
 
-    forceresult = np.matmul(GSM, dispmat)
+    for load in loads:
+        lon, fx, fy = load
+        forcelist[lon*2-2] = fx
+        forcelist[lon*2-1] = fy
 
-    dispresult = np.matmul(np.linalg.inv(GSM), forceresult)
+    dispresult = np.matmul(np.linalg.inv(GSM), forcelist)
     rin = 0
     for i in range(tn*2):
         if dispmat[i, 0] == 1:
@@ -116,11 +111,11 @@ def truss_analysis(tn, te, xco, yco, A, E, elements):
     rrgsm = np.delete(GSM, rcdlist, 0)
     crgsm = np.delete(rrgsm, rcdlist, 1)
     rgsm = crgsm
-    rforcemat = np.delete(forceresult, rcdlist, 0)
+    rforcemat = np.delete(forcelist, rcdlist, 0)
 
     dispresult = np.matmul(np.linalg.inv(rgsm), rforcemat)
 
-    forceresult = np.matmul(GSM, dispmat)
+    forcelist = np.matmul(GSM, dispmat)
 
     newxco = []
     newyco = []
@@ -155,7 +150,7 @@ def truss_analysis(tn, te, xco, yco, A, E, elements):
     for i in range(te):
         eforce[i, 0] = A * elstress[i, 0]
 
-    return GSM, dispmat, forceresult, newxco, newyco, elstrain, elstress, eforce
+    return GSM, dispmat, forcelist, newxco, newyco, elstrain, elstress, eforce
 
 def main():
     st.title("Truss Analysis Application")
@@ -180,8 +175,30 @@ def main():
         b = st.number_input(f'Enter the End node of element {i+1}:', key=f'end_{i}', min_value=1, max_value=tn)
         elements.append((a, b))
 
+    supports = []
+    loads = []
+
+    tsupn = st.number_input('Enter the total number of nodes having supports:', min_value=0, max_value=tn)
+    supcondition = ['P = pinned',
+                    'H = Horizonal restrained (vertical is free to move)',
+                    'V = Vertical restrained (Horizontal is free to move)']
+
+    for i in range(tsupn):
+        supn = st.number_input('Enter the node number of support:', min_value=1, max_value=tn)
+        for a in supcondition:
+            st.write(a)
+        condition = st.text_input('Enter the condition of the support:')
+        supports.append((supn, condition))
+
+    tlon = st.number_input('Enter the total number of loaded nodes:', min_value=0, max_value=tn)
+    for i in range(tlon):
+        lon = st.number_input('Enter the node number of Loading:', min_value=1, max_value=tn)
+        fx = st.number_input('Enter the Horizontal load at this node in N:', key=f'fx_{lon}', value=0.0)
+        fy = st.number_input('Enter the Vertical load at this node in N:', key=f'fy_{lon}', value=0.0)
+        loads.append((lon, fx, fy))
+
     if st.button("Run Analysis"):
-        result = truss_analysis(tn, te, xco, yco, A, E, elements)
+        result = truss_analysis(tn, te, xco, yco, A, E, elements, supports, loads)
 
         if result is not None:
             GSM, dispmat, forceresult, newxco, newyco, elstrain, elstress, eforce = result
