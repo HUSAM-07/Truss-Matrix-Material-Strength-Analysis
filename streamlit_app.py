@@ -164,8 +164,8 @@ def main():
         st.write("This app helps you analyze truss structures and provides information about the truss matrix.")
         st.write("# Truss Matrix Information")
         st.write("A truss is a structure that consists of members organized to form triangles. The analysis of truss structures involves solving for displacements and forces using the stiffness matrix.")
-        st.caption("This app is made by Krithika Rathi")
         
+
         st.subheader("Global Stiffness Matrix (GSM):")
         st.write("The GSM is a square matrix that represents the stiffness characteristics of the entire truss structure. It is assembled by combining the stiffness matrices of individual truss elements.")
 
@@ -175,6 +175,7 @@ def main():
         st.subheader("Force Matrix:")
         st.write("The force matrix represents the forces applied to each degree of freedom at every node. It is determined by applying external loads to the truss structure.")
 
+        st.caption("This app is made by Krithika Rathi")
     elif page == "Run Analysis":
 
         tn = st.number_input('Enter the total number of nodes:', value=3, min_value=1, key='tn')
