@@ -2,6 +2,7 @@ import streamlit as st
 import math
 import numpy as np
 
+
 def truss_analysis(tn, te, xco, yco, A, E, elements, supports, loads):
     np.set_printoptions(3, suppress=True)
 
